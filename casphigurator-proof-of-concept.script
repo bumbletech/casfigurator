@@ -1,4 +1,4 @@
---Enter in your JSS URL here.
+--set your JSS URL here.
 set yourJSSurl to "https://you.jss.url:8443"
 --There are more varaibles to be set for your specific extension attrbutes, but I have yet to figure out a way to set them at the top of the script as we need to have nested variables defined in them later on. Do a find/text search in this script for "--Define extension attributes"
 
