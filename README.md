@@ -54,7 +54,7 @@ If you’re using DEP, you’ll want to make sure that Configurator 2 and your J
 
 ###In The Script
 
-*(I just want to start off with a big disclaimer that this is my first significant project with AppleScript. Undoubtedly many things could be written and implemented in a better way—this is mostly a proof of concept and will require a bit of effort on your part to custom tailor it to your environment if you want to play around with it.)*
+*(I just want to start off with a big disclaimer that despite some genericizing, this script is still very derived from the needs of my envriornment. Undoubtedly many things could be written and implemented in a better way—this is mostly a proof of concept and will require a bit of effort on your part to custom tailor it to your environment if you want to play around with it.)*
 
 At the very top of the script we’re going to set the variable for your JSS—fairly straight forward.
 
