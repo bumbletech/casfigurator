@@ -1,0 +1,250 @@
+--Enter in your JSS URL here.
+set yourJSSurl to "https://you.jss.url:8443"
+--There are more varaibles to be set for your specific extension attrbutes, but I have yet to figure out a way to set them at the top of the script as we need to have nested variables defined in them later on. Do a find/text search in this script for "--Define extension attributes"
+
+
+--prompt the user for their JSS username and password
+display dialog "Enter your JSS username" default answer ""
+set jssUser to (the text returned of the result)
+
+display dialog "Enter your password" default answer "" with hidden answer
+if length of (text returned of the result) is not 0 then
+	set jssPass to (the text returned of the result)
+else
+	display dialog "You didn't enter a password! Re-run this script again." buttons ["OK"] default button 1
+	error number -128
+end if
+
+
+--set the variable for the credentials to be used in a curl command
+set apiUser to jssUser & ":" & jssPass
+
+--A long set of prompts to guide the user to build the devices name to follow...
+try
+	set progress description to "iPad Setup"
+	set progress additional description to "Collecting Naming Information"
+	
+	
+	--Prompts the user to select the district which will be used to build the device's name
+	repeat
+		set DistrictOptionList to {"District 1", "District 2", "District 3", "District 4", "District 5", "District 6"}
+		
+		set chosenDistrict to choose from list DistrictOptionList with prompt "Please select a district:"
+		
+		if chosenDistrict is false then
+			error number -128 (* user cancelled *)
+		else
+			set chosenDistrict to chosenDistrict's item 1 (* extract choice from list *)
+		end if
+		if chosenDistrict is not "" then exit repeat
+	end repeat
+	
+	--This repeat takes the previous response and prompts the user to select a building in that district
+	repeat
+		--big list of buildings to choose from
+		if chosenDistrict is "District 1" then
+			set districtAbrv to "D1"
+			set BuildingOptionList to {"High School: HHS", "Middle School: HMS", "Adult Education: ADE", "Administration: ADM", "Maintenance: MNT", "Transportation: TRN"}
+		else if chosenDistrict is "District 2" then
+			set districtAbrv to "D2"
+			set BuildingOptionList to {"East: EST", "Heights: HST", "Jefferson: JEF", "West: WST", "High School: HHS", "Maplewood: MAP", "Maintenance and Transportation: MTC", "Van Raalte: VAN", "Administration: ADM"}
+		else if chosenDistrict is "District 3" then
+			set districtAbrv to "D3"
+			set BuildingOptionList to {"Early on Program: EOP", "Zeeland CBI: ZCB", "Coopersvile Pupil Account Office: CPA"}
+		else if chosenDistrict is "District 4" then
+			set districtAbrv to "D4"
+			set BuildingOptionList to {"High School: OHS", "Middle School: OMS", "Lower Elementary: OLE", "Upper Elementary: OUE", "Early Child / Adult Education: OEC", "Admin / Transportation: OAT"}
+		else if chosenDistrict is "District 5" then
+			set districtAbrv to "D5"
+			set BuildingOptionList to {"High / Middle School: SHS", "Douglas Elementary: DES", "Central Office (Administration): ADM", "Transportation: TRN", "Preschool: PRE"}
+		else if chosenDistrict is "District 6" then
+			set districtAbrv to "D6"
+			set BuildingOptionList to {"High School: SLH", "Middle School: SLM", "Alt Ed: SAE", "Transportation: STR", "Maintenance: SMA", "Fitness and Aquatic Center: FAC"}
+		end if
+		if districtAbrv is not "" then exit repeat
+	end repeat
+	
+	--update device baseName
+	set baseName to districtAbrv
+	
+	--prompt user to select a building. BuildingOptionList is set by the previous repeat.	
+	repeat
+		set chosenBuilding to choose from list BuildingOptionList with prompt "Please select a buidling:"
+		if chosenBuilding is false then
+			error number -128 (* user cancelled *)
+		else
+			set chosenBuilding to chosenBuilding's item 1 (* extract choice from list *)
+		end if
+		if chosenBuilding is not "" then exit repeat
+	end repeat
+	
+	--All of the building name options contain their abbreviation as the last word, we'll use that in the name.
+	set buildingAbrv to the last word in chosenBuilding
+	
+	
+	--update device basename
+	set baseName to districtAbrv & "-" & buildingAbrv & "-IPA-"
+	
+	repeat
+		--get room, cart or department number
+		display dialog "You're doing great. So far you've named the base name of these iPads to:" & return & return & baseName & return & return & "This is the hard part, how are these iPads going to be identified in this buidling. Is it by...?" buttons {"Cart Number", "Room Number", "Department Abriviation"}
+		if the button returned of the result is "Cart Number" then
+			set groupIDchoice to "Cart Number"
+			set numberChoiceslist to {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"}
+			set chosenNumber to choose from list numberChoiceslist with prompt "Select cart's number:"
+			if chosenNumber is false then
+				error number -128 (* user cancelled *)
+			else
+				set chosenNumber to chosenNumber's item 1 (* extract choice from list *)
+				set groupID to chosenNumber
+			end if
+		else if the button returned of the result is "Room Number" then
+			set groupIDchoice to "Room Number"
+			display dialog "Okay. Enter the" & space & groupIDchoice & ":" default answer ""
+			set groupID to the text returned of the result
+		else if the button returned of the result is "Department Abriviation" then
+			set groupIDchoice to "Department Abriviation"
+			display dialog "Okay. Enter the" & space & groupIDchoice & ":" default answer ""
+			set groupID to the text returned of the result
+		end if
+		if groupID is not "" then exit repeat
+	end repeat
+	
+	--update the device's base name variable
+	set baseName to districtAbrv & "-" & buildingAbrv & "-IPA-" & groupID
+	display dialog "So far so good. Device base name is now set to '" & baseName & "'."
+	
+	--prompt the user to enter what number to start numbering devices at		
+	repeat
+		display dialog "Enter the starting number for the naming sequence. If this is a new cart, start at 1. Otherwise, double check the JSS or Technician for where this cart left off." default answer "1"
+		try
+			set startingNumber to (the text returned of the result) as integer
+			if startingNumber is greater than 0 then exit repeat
+		on error
+			beep
+		end try
+	end repeat
+	
+	--tell the user they did a great job and let them double check their work
+	display dialog "Great! We'll start naming these iPads starting from '" & baseName & "' with number " & startingNumber & "."
+	
+	--prompt the user to enter a username to assign the devices to	
+	display dialog "Enter the username this devices is being assigned to. If not user, leave blank." default answer ""
+	set assignedUserUsername to (the text returned of the result)
+	
+	--prompt the user to select the app distribution lists they want the devices to be subscribed to
+	--You'll need to have corresponding smart groups looking for this criteria, and apps scoped to those groups on your JSS
+	set AppList to choose from list {"Kindergarten", "First", "Second", "Apple-iLife", "Music", "GoogleDriveApps"} with title "App Distribution Lists" with prompt "Select app lists this iPad should subscribe to. Hold down the command key to choose more than one." with multiple selections allowed and empty selection allowed
+	
+	
+	
+	set progress description to "iPad Setup"
+	set progress additional description to "Collecting Information on iPads"
+	
+	--prep configurator to rename devices
+	tell script "Configuration Utility"
+		-- get data of chosen devices
+		copy CNFGdevicesMatchingSpecifiedClass("iPad", false) to ¬
+			{deviceCount ¬
+				, propertyTitles ¬
+				, theseDeviceECIDs ¬
+				, theseDeviceClasses ¬
+				, theseDeviceTypes ¬
+				, theseDeviceNames}
+	end tell
+	
+	set progress description to "iPad Setup"
+	set progress additional description to "Renaming Devices in Configurator"
+	
+	
+	--rename devices with the information the user entered	
+	tell script "Configuration Utility"
+		-- rename the devices
+		set devicesInfo to CNFGrenameSpecifiedDevicesUsingNumericSuffix(theseDeviceECIDs, baseName, startingNumber, 2, "-")
+	end tell
+on error errorMessage number errorNumber
+	if errorNumber is not -128 then
+		display alert "ERROR" message errorMessage buttons {"Cancel"} default button 1 cancel button 1
+	end if
+end try
+
+set progress description to "iPad Setup"
+set progress additional description to "Sending Data to the JSS"
+
+
+--get the device serials and names from configurator to later use that to send data to the JSS
+tell script "Configuration Utility"
+	
+	copy CNFGvaluesOfSpecifiedProperties("all", {"ECID", "serialNumber", "name"}, false) to ¬
+		{deviceCount ¬
+			, propertyTitles ¬
+			, theseDeviceECIDs ¬
+			, theseSerialNumbers ¬
+			, theseNames}
+	
+	
+	--this is were things can get complicated. We're trying to run unix commands in AppleScript
+	set jssAPIpath to yourJSSurl & "/JSSResource/mobiledevices/serialnumber/"
+	repeat with i from 1 to the deviceCount
+		set thisECID to item i of theseDeviceECIDs
+		set thisSerialNumber to item i of theseSerialNumbers
+		set thisName to item i of theseNames
+		set thisDeviceAPIpath to yourJSSurl & "/JSSResource/mobiledevices/serialnumber/" & thisSerialNumber & " "
+		set curlCommand to "curl -k -s -u " & apiUser & " "
+		set AppleScript's text item delimiters to " "
+		
+		
+		--Define extension attributes
+		--since extension attributes vary from system to system, I've tried to define them here to make it (maybe?) a little easier.
+		--You can get the XML data from your JSS by going to you.jss.url/api under "/mobiledeviceextensionattributes"	
+		set groupSite to "<site><id>8</id><name>Josh's Test Site</name></site>"
+		set extAtAppDistGroup to "<extension_attribute><id>10</id><name>App Distribution Group</name><type>String</type><value>" & AppList & "</value></extension_attribute>"
+		set extAtAssignedName to "<extension_attribute><id>9</id><name>Assigned Name</name><type>String</type><value>" & thisName & "</value></extension_attribute>"
+		set extAtStatus to "<extension_attribute><id>11</id><name>Status</name><type>String</type><value>Active</value></extension_attribute>"
+		set extAtGenericUser to "<extension_attribute><id>6</id><name>Assigned To (Generic Only)</name><type>String</type><value/></extension_attribute>"
+		set extAtNotes to "<extension_attribute><id>5</id><name>Notes</name><type>String</type><value/></extension_attribute>"
+		
+		
+		--prep and XML file to use for the PUT request
+		set PutXMLforFile to "echo \"<mobile_device><general><display_name>" & thisName & "</display_name><device_name>" & thisName & "</device_name><name>" & thisName & "</name>" & groupSite & "</general><location><username>" & assignedUserUsername & "</username><real_name/><email_address/><position/><phone/><department/><building/><room/></location><extension_attributes>" & extAtAppDistGroup & extAtAssignedName & extAtStatus & extAtGenericUser & extAtNotes & "</extension_attributes></mobile_device>\" > /tmp/deviceConfigPutTemp.xml"
+		do shell script PutXMLforFile
+		set AppleScript's text item delimiters to ""
+		set putRequest to curlCommand & thisDeviceAPIpath & "-T \"/tmp/deviceConfigPutTemp.xml\" -X PUT"
+		do shell script putRequest
+	end repeat
+	
+	set progress description to "iPad Setup"
+	set progress additional description to "Sending Update Device Commands to JSS"
+	
+	
+	--smart groups wont get recaluclated by the new data we've added until the devices do an Inventory update. Sets up commands...
+	set getJSSdeviceIDs to do shell script "curl -s -k -u " & apiUser & " " & yourJSSurl & "/JSSResource/mobiledevices/match/" & baseName & "* | xpath '//mobile_devices/mobile_device/id' 2>&1 | awk -F'<id>|</id>' '{print $2}' | tail -n +3"
+	
+	set oldDelim to AppleScript's text item delimiters
+	
+	set AppleScript's text item delimiters to return
+	
+	set theList to text items of getJSSdeviceIDs
+	
+	set AppleScript's text item delimiters to ","
+	
+	set theListString to theList as string
+	
+	set JSScommandURLupdate to yourJSSurl & "/JSSResource/mobiledevicecommands/command/UpdateInventory/id/"
+	
+	set JSScommandURLblankPush to yourJSSurl & "/JSSResource/mobiledevicecommands/command/BlankPush/id/"
+	
+	set updateDevices to do shell script "curl -s -k -u " & apiUser & " " & JSScommandURLupdate & theListString & " -X POST"
+	
+	set blankPush to do shell script "curl -s -k -u " & apiUser & " " & JSScommandURLblankPush & theListString & " -X POST"
+	
+	--creates update commands to force the JSS to recalculate the devices smart groups
+	updateDevices
+	--creates blank push because (at least on my system) it makes things happen faster--this is probably a bad thing.
+	delay 2
+	blankPush
+	
+	
+end tell
+
+display dialog "All devices done!"
