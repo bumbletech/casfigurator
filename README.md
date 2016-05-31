@@ -58,9 +58,9 @@ If you’re using DEP, you’ll want to make sure that Configurator 2 and your J
 
 At the very top of the script we’re going to set the variable for your JSS—fairly straight forward.
 
-There are also variables for extension attributes (and due to my lack of expertise in trying to put these variables in a more friendly place) they’re buried down in the section commented “--Define extension attributes”. What you want to set here is completely up to you-—you just need to know the right XML string for your extension attributes.
+There are also variables for extension attributes (and due to my lack of expertise in trying to put these variables in a more friendly place) they’re buried down in the section commented “--Define extension attributes”. What you want to set here is completely up to you-—you'll just need to know the right XML string for your extension attributes.
 
-For the ExtAtDistGroup variable, you can pull the ID for you "App Distribution Group" extension atribute from the URL of it's page on the JSS:
+For the ExtAtDistGroup variable, provided you've named it the same as what's in my script, you can grab the ID for you "App Distribution Group" extension atribute from the URL of its page on the JSS:
 
 `.../mobileDeviceExtensionAttributes.html?id=10`
 
