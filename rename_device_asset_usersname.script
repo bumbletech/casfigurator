@@ -1,0 +1,47 @@
+--Enter in your JSS URL here.
+set yourJSSurl to "https://your.jss.url"
+
+
+--prompt the user for their JSS username and password
+display dialog "Enter your JSS username" default answer ""
+set jssUser to (the text returned of the result)
+
+display dialog "Enter your password" default answer "" with hidden answer
+if length of (text returned of the result) is not 0 then
+	set jssPass to (the text returned of the result)
+else
+	display dialog "You didn't enter a password! Re-run this script again." buttons ["OK"] default button 1
+	error number -128
+end if
+
+
+--set the variable for the credentials to be used in a curl command
+set apiUser to jssUser & ":" & jssPass
+
+
+
+
+tell script "Configuration Utility"
+	(* example of how to rename devices with names based on their serial numbers *)
+	
+	-- get info for connected devices
+	copy CNFGvaluesOfSpecifiedProperties("all", {"ECID", "serialNumber"}, false) to ¬
+		{deviceCount ¬
+			, propertyTitles ¬
+			, theseDeviceECIDs ¬
+			, theseSerialNumbers}
+	
+	--for each device get info from the JSS and change the name accordingly
+	repeat with i from 1 to the deviceCount
+		set thisECID to item i of theseDeviceECIDs
+		set thisSerialNumber to item i of theseSerialNumbers
+		set deviceLookup to "curl -s -k -u " & apiUser & " " & yourJSSurl & "/JSSResource/mobiledevices/serialnumber/" & thisSerialNumber & " > /tmp/rename.xml"
+		do shell script deviceLookup
+		set asset to "cat /tmp/rename.xml | xpath '//mobile_device/general/asset_tag' 2>&1 | awk -F'<asset_tag>|</asset_tag>' '{print $2}' | tail -n +3"
+		set UserRealName to "cat /tmp/rename.xml | xpath '//mobile_device/location/real_name' 2>&1 | awk -F'<real_name>|</real_name>' '{print $2}' | tail -n +3"
+		set thisAssettag to do shell script asset
+		set thisUserRealName to do shell script UserRealName
+		set thisDeviceName to thisAssettag & space & thisUserRealName
+		CNFGrenameSpecifiedDevice(thisECID, thisDeviceName)
+	end repeat
+end tell
