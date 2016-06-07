@@ -1,4 +1,4 @@
-casphigurator
+casfigurator
 ======
 *Improved, wired iOS “imaging” with Configurator and Casper*
 
