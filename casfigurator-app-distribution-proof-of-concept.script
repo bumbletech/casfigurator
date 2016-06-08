@@ -218,7 +218,7 @@ tell script "Configuration Utility"
 	
 	
 	--smart groups wont get recaluclated by the new data we've added until the devices do an Inventory update. Sets up commands...
-	set getJSSdeviceIDs to do shell script "curl -s -k -u " & apiUser & " " & yourJSSurl & "/JSSResource/mobiledevices/match/" & baseName & "* | xpath '//mobile_devices/mobile_device/id' 2>&1 | awk -F'<id>|</id>' '{print $2}' | tail -n +3"
+	set getJSSdeviceIDs to do shell script "curl -s -k -u \"Accept: application/xml\" " & apiUser & " " & yourJSSurl & "/JSSResource/mobiledevices/match/" & baseName & "* | xpath '//mobile_devices/mobile_device/id' 2>&1 | awk -F'<id>|</id>' '{print $2}' | tail -n +3"
 	
 	set oldDelim to AppleScript's text item delimiters
 	
@@ -234,9 +234,9 @@ tell script "Configuration Utility"
 	
 	set JSScommandURLblankPush to yourJSSurl & "/JSSResource/mobiledevicecommands/command/BlankPush/id/"
 	
-	set updateDevices to do shell script "curl -s -k -u " & apiUser & " " & JSScommandURLupdate & theListString & " -X POST"
+	set updateDevices to do shell script "curl -s -k -u \"Accept: application/xml\" " & apiUser & " " & JSScommandURLupdate & theListString & " -X POST"
 	
-	set blankPush to do shell script "curl -s -k -u " & apiUser & " " & JSScommandURLblankPush & theListString & " -X POST"
+	set blankPush to do shell script "curl -s -k -u \"Accept: application/xml\" " & apiUser & " " & JSScommandURLblankPush & theListString & " -X POST"
 	
 	--creates update commands to force the JSS to recalculate the devices smart groups
 	updateDevices
