@@ -7,6 +7,8 @@ Casphigurator is a proof of concept AppleScript to connect Apple Configurator 2 
 
 This script can be run on its own after initial iPad setup, or as part of an Automator workflow to allow for a single-launch guided setup.
 
+[Here's a video overview and demo (demo starts around 2:15)](https://youtu.be/g98iwQDwUb0)
+
 ####Requirements
 1. X 10.11 - El Capitan (tested with 10.11.5)
 2. Configurator 2 (tested with v2.2.1)
