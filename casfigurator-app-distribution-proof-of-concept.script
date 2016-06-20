@@ -16,8 +16,26 @@ else
 end if
 
 
+
 --set the variable for the credentials to be used in a curl command
 set apiUser to jssUser & ":" & jssPass
+
+--simple credentials check before moving on
+set curlCommandCreds to "curl -k -s -u " & apiUser & " " & yourJSSurl & "/JSSResource/categories"
+
+set Authcheck to do shell script curlCommandCreds
+
+try
+	if "Unauthorized" is in Authcheck then
+		display dialog "Username or password incorrect. Exiting workflow. Please try again or contact the Apple Administrator."
+		error "Could not authenticate to the JSS with provided username and password."
+	else
+		display dialog "JSS connection successful!"
+	end if
+end try
+
+
+
 
 --A long set of prompts to guide the user to build the devices name to follow...
 try
