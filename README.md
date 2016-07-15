@@ -1,6 +1,6 @@
 casfigurator
 ======
-*Improved, wired iOS “imaging” with Configurator and Casper*
+*Improved, wire-facilitated but over-the-air iOS “imaging” with Configurator and Casper*
 
 ####Introduction
 Casphigurator is a proof of concept AppleScript to connect Apple Configurator 2 with the Casper JSS API to allow simplified iPad setup with known app distribution lists.
