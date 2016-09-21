@@ -10,6 +10,7 @@ Casphigurator is a collection of scripts that allow you to connect Apple Configu
 This script can be run on its own after initial iPad setup, or as part of an Automator workflow to allow for a single-launch guided setup.
 
 [Here's a video overview and demo of version v0.1](https://youtu.be/taqDR3x-GC4)
+
 [View the orignal proof-of-concept video and demo here](https://www.youtube.com/watch?v=g98iwQDwUb0)
 
 ####Requirements
