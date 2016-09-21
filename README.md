@@ -1,6 +1,6 @@
 casfigurator
 ======
-*Improved, wire-assisted, but over-the-air iOS “imaging” with Configurator and Casper*
+*Improved, wire-assisted, but over-the-air iOS “imaging” with Configurator 2's automation tools and Casper*
 
 ###**_Now on version 0.1!_**
 You can find it on the [releases page](https://github.com/bumbletech/casfigurator/releases)
