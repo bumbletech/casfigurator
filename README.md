@@ -15,11 +15,10 @@ This script can be run on its own after initial iPad setup, or as part of an Aut
 
 ####Requirements
 1. X 10.11 - El Capitan (tested with 10.11.5)
-2. Configurator 2 (tested with v2.2.1)
+2. Configurator 2 (tested with v2.2.1-v2.3)
 3. Configurator Automation Tools Installed
-4. JAMF’s Casper Suite (tested with 9.91)
+4. JAMF’s Casper Suite (tested with 9.91-v9.96)
 5. A user with Mobile Device write access in the API
-6. Comfortability with AppleScript
 7. Probably a test JSS. Definitly a test JSS.
 
 ####Basic Project Goal
