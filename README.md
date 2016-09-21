@@ -2,12 +2,15 @@ casfigurator
 ======
 *Improved, wire-facilitated but over-the-air iOS “imaging” with Configurator and Casper*
 
+Now on version 0.1!
+
 ####Introduction
-Casphigurator is a proof of concept AppleScript to connect Apple Configurator 2 with the Casper JSS API to allow simplified iPad setup with known app distribution lists.
+Casphigurator is a collection of scripts that allow you to connect Apple Configurator 2 with the Casper JSS API to allow guided iPad setup and add App Distribution Lists to your device records.
 
 This script can be run on its own after initial iPad setup, or as part of an Automator workflow to allow for a single-launch guided setup.
 
-[Here's a video overview and demo (demo starts around 2:15)](https://youtu.be/g98iwQDwUb0)
+[Here's a video overview and demo of version v0.1](https://youtu.be/taqDR3x-GC4)
+[View the orignal proof-of-concept video and demo here](https://www.youtube.com/watch?v=g98iwQDwUb0)
 
 ####Requirements
 1. X 10.11 - El Capitan (tested with 10.11.5)
@@ -25,50 +28,52 @@ Essentially: Emulate Munki+DeployStudio for iPads as much as possible.
 
 (Also, come up with a better name. Portmanteaus are great and all but…)
 
+
+A few words of caution
+-----
+
+This has been tested on a fresh JSS as well as my test and production JSSes. While I'm confident you will not break anything that already exists, your experince may vary. The script still make some assumptions (like your JSS being available, your devices being supervised, etc). So far, I've handled a few major errors—some will just pass the error on to you and quit. [Please, report any bugs.](https://github.com/bumbletech/casfigurator/issues)
+
 Setup
 -----
 ###On the JSS
 
 The basic goal is to try to emulate Munki-type manifests in the JSS. This is achieved by an extension attribute called “App Distribution Group” and series of smart groups.
 
-Create your extension attribute with the following information:
+Version 0.1 comes with "casfigurator_jss_setup.sh"—a bash script that will add the proper extension attributes and help you create smart groups with the proper criteria. All you need is your JSS URL and a JSS account with write access to the API.
 
-1. Display Name: App Distribution Group
+Otherwise, you can create your extension attribute with the following information:
+
+1. Display Name: "App Distribution Group"
 2. Description: Used to facilitate app assignment with Casphigurator
 3. Data Type: String
 4. Inventory Display: General
 5. Input Type: Text Field
 
-You'll also need to know the the proper XML the JSS API uses to use this extension attribute within your JSS. As extension attributes are custom information, the ID number will be different from system to system.
+The setup script will also help you create your App Distribution Smart groups, but you can create them manually as well:
 
-The extension attributes will be populated by space separated values that will function as “like” criteria for smart groups. If you want an app distribution group for the Google Drive apps (Drive, Docs, Sheets & Slides), you decide how you should name this distribution group. In my case it’s “GoogleDriveApps.” So, we need create a smart group where “App Distribution Group” is LIKE “GoogleDriveApps.”
+1. Display Name: "App Distribution Group - (criteria/name)"
+2. Criteria: "App Distribution Group" is LIKE "(criteria-string)" <- This criteria string can't contain spaces
 
-With that group created, we need to make sure all of the associated Google Drive apps in the app catalog are scoped to this group.
-
-That’s the basics of Casphigurator App distribution. Lather, rinse and repeat for any apps and distribution groups you’d like.
+You will then need to scope apps to your smart groups on the JSS. For now, you'll have to do that the old fashined way.
 
 ###On the Mac
-1. Install Configuration Automation Tools:
-2. Launch Configurator
-3. In the drop down menus - “Apple Configurator 2 > Install Migration Tools” (check out http://krypted.com/iphone/install-the-command-line-tools-using-apple-configurator-2/ for a better guide)
+Install Configuration Automation Tools:
+1. Launch Configurator
+2. In the drop down menus - “Apple Configurator 2 > Install Migration Tools” (check out http://krypted.com/iphone/install-the-command-line-tools-using-apple-configurator-2/ for a better guide)
 
 If you’re using DEP, you’ll want to make sure that Configurator 2 and your JSS are using the same Supervision Identity. See Supervision Identities section in this JAMF guide: http://resources.jamfsoftware.com/documents/technical-papers/Deploying-iOS-Devices-with-the-Casper-Suite-and-Apple-Configurator-2-v9.82-or-Later.pdf
 
-###In The Script
+###The Client-side AppleScripts
 
-*(I just want to start off with a big disclaimer that despite some genericizing, this script is still very derived from the needs of my envriornment. Undoubtedly many things could be written and implemented in a better way—this is mostly a proof of concept and will require a bit of effort on your part to custom tailor it to your environment if you want to play around with it.)*
+Casfigurator_iPad_Setup_Name_and_AppGroups.app
+Casfigurator_Unplugged-Change_AppGroups
 
-At the very top of the script we’re going to set the variable for your JSS—fairly straight forward.
+Version v0.1 reads your extension attribute for "App Distribution Groups" and smart groups with names  like "App Distribution Group" from the JSS API. You will not need to edit this script.
 
-There are also variables for extension attributes (and due to my lack of expertise in trying to put these variables in a more friendly place) they’re buried down in the section commented “--Define extension attributes”. What you want to set here is completely up to you-—you'll just need to know the right XML string for your extension attributes.
+All you will need is your JSS URL, a JSS account with write access to the API and a copy of Configurator 2 with the proper supervision authoriy over the connected iPads.
 
-For the ExtAtDistGroup variable, provided you've named it the same as what's in my script, you can grab the ID for you "App Distribution Group" extension atribute from the URL of its page on the JSS:
-
-`.../mobileDeviceExtensionAttributes.html?id=10`
-
-There's a large section to assist the user in setting the basename for the devices. I use a basename that's [District]-[Building]-IPA-[CartNumber/Department/Room]-##. If your envionrment is not as complex as mine, you'll likely want to do a bit re-writting to simplify it.
-
-You'll want to customize the list of items that can become the "AppList" variable to match your corresponding smart group criteria. Search for the "--Set App List Variable" comment to find this section.
+There is also an "Unplugged" AppleScript that will allow you to change App Distribution Group criteria written to your device records without devices being connected to Configurator 2. This uses the JSS API's match function to find devices by their basename and then overwrite the "App Distribution Group" field on each device record with your newly entered selections.
 
 
 
