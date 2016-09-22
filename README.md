@@ -6,7 +6,7 @@ casfigurator
 You can find it on the [releases page](https://github.com/bumbletech/casfigurator/releases)
 
 ####Introduction
-Casphigurator is a collection of scripts that allow you to connect Apple Configurator 2 with the Casper JSS API to allow guided iPad setup and add App Distribution Lists to your device records.
+Casfigurator is a collection of scripts that allow you to connect Apple Configurator 2 with the Casper JSS API to allow guided iPad setup and add App Distribution Lists to your device records.
 
 This script can be run on its own after initial iPad setup, or as part of an Automator workflow to allow for a single-launch guided setup.
 
@@ -46,7 +46,7 @@ Version 0.1 comes with "casfigurator_jss_setup.sh"—a bash script that will add
 Otherwise, you can create your extension attribute with the following information:
 
 1. Display Name: "App Distribution Group"
-2. Description: Used to facilitate app assignment with Casphigurator
+2. Description: Used to facilitate app assignment with Casfigurator
 3. Data Type: String
 4. Inventory Display: General
 5. Input Type: Text Field
