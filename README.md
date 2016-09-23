@@ -2,10 +2,15 @@ casfigurator
 ======
 *Improved, wire-assisted, but over-the-air iOS “imaging” with Configurator 2's automation tools and Casper. (Essentially: trying to emulate Munki+DeployStudio for iPads.)*
 
+![alt tag](images/casfigurator_window.png)
+
+*(Casfigurator prompting a user to select the app lists to apply to connected iOS devices)*
+
 ###**_Now on version 0.1!_**
 You can find it on the [releases page](https://github.com/bumbletech/casfigurator/releases)
 
 [Here's a video overview and demo of version v0.1](https://youtu.be/taqDR3x-GC4)
+
 
 ####Introduction
 The goal of Casfigurator is to give field technicians, "accidental-technicians" (secretaries, teachers, interns) and other laymen a tool to setup cart-based/non-user-assigned iOS devices with a menu of pre-determined app distribution groups—all without having to manually create groups, or update app scopes on the JSS. Casfigurator is a collection of AppleScripts that connects Apple Configurator 2 (and its very important automation tools) with the Casper JSS API. This allows guided iPad setup and the ability to add App Distribution manifests in an easy way that doesn't use the Terminal or CSVs.
