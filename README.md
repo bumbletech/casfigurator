@@ -4,6 +4,7 @@ casfigurator
 
 ###**_Now on version 0.1!_**
 You can find it on the [releases page](https://github.com/bumbletech/casfigurator/releases)
+
 [Here's a video overview and demo of version v0.1](https://youtu.be/taqDR3x-GC4)
 
 ####Introduction
