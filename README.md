@@ -4,13 +4,14 @@ casfigurator
 
 ###**_Now on version 0.1!_**
 You can find it on the [releases page](https://github.com/bumbletech/casfigurator/releases)
+[Here's a video overview and demo of version v0.1](https://youtu.be/taqDR3x-GC4)
 
 ####Introduction
-Casfigurator is a collection of scripts that allow you to connect Apple Configurator 2 with the Casper JSS API to allow guided iPad setup and add App Distribution Lists to your device records.
+The goal of Casfigurator is to give field technicians, "accidental-technicians" (secretaries, teachers, interns) and other laymen a tool to setup cart-based/non-user-assigned iOS devices with a menu of pre-determined app distribution groups—all without having to manually create groups, or update app scopes on the JSS. Casfigurator is a collection of AppleScripts that connects Apple Configurator 2 (and its very important automation tools) with the Casper JSS API. This allows guided iPad setup and the ability to add App Distribution manifests in an easy way that doesn't use the Terminal or CSVs.
 
-This script can be run on its own after initial iPad setup, or as part of an Automator workflow to allow for a single-launch guided setup.
+Essentially: My way of trying to emulate Munki+DeployStudio for iPads.
 
-[Here's a video overview and demo of version v0.1](https://youtu.be/taqDR3x-GC4)
+These scripts can be run on their own after initial iPad setup, or as part of an Automator workflow to allow for a single-launch guided setup.
 
 [View the orignal proof-of-concept video and demo here](https://www.youtube.com/watch?v=g98iwQDwUb0)
 
@@ -21,13 +22,6 @@ This script can be run on its own after initial iPad setup, or as part of an Aut
 4. JAMF’s Casper Suite (tested with 9.91-v9.96)
 5. A user with Mobile Device write access in the API
 7. Probably a test JSS. Definitly a test JSS.
-
-####Basic Project Goal
-Give field technicians and laymen a tool to setup cart/non-user assigned iOS devices with pre-determined app distribution without having to manually create groups, and scope apps.
-
-Essentially: Emulate Munki+DeployStudio for iPads as much as possible.
-
-(Also, come up with a better name. Portmanteaus are great and all but…)
 
 
 A few words of caution
