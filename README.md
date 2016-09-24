@@ -33,7 +33,7 @@ These scripts can be run on their own after initial iPad setup, or as part of an
 A few words of caution
 -----
 
-This has been tested on a fresh JSS as well as my test and production JSSes. While I'm confident you will not break anything that already exists, your experince may vary. The script still make some assumptions (like your JSS being available, your devices being supervised, etc). So far, I've handled a few major errors—some will just pass the error on to you and quit. [Please, report any bugs.](https://github.com/bumbletech/casfigurator/issues)
+This has been tested on a fresh JSS as well as my test and production JSSes. While I'm confident you will not break anything that already exists, your experince may vary. The script still makes some assumptions (like your JSS being available, your devices being supervised, etc). So far, I've handled a few major errors—some will just pass the error on to you and quit. [Please, report any bugs.](https://github.com/bumbletech/casfigurator/issues)
 
 Setup
 -----
@@ -59,7 +59,8 @@ The setup script will also help you create your App Distribution Smart groups, b
 You will then need to scope apps to your smart groups on the JSS. For now, you'll have to do that the old fashined way.
 
 ###On the Mac
-Install Configuration Automation Tools:
+Install Configurator Automation Tools:
+
 1. Launch Configurator
 2. In the drop down menus - “Apple Configurator 2 > Install Migration Tools” (check out http://krypted.com/iphone/install-the-command-line-tools-using-apple-configurator-2/ for a better guide)
 
