@@ -22,12 +22,12 @@ These scripts can be run on their own after initial iPad setup, or as part of an
 [View the orignal proof-of-concept video and demo here](https://www.youtube.com/watch?v=g98iwQDwUb0)
 
 ####Requirements
-1. X 10.11 - El Capitan (tested with 10.11.5)
-2. Configurator 2 (tested with v2.2.1-v2.3)
+1. Minumum macOS: 10.11 - El Capitan (tested through 10.12.4)
+2. Configurator 2 (tested with v2.2.1-v2.4)
 3. Configurator Automation Tools Installed
-4. JAMF’s Casper Suite (tested with 9.91-v9.96)
+4. JAMF’s Casper Suite (tested with 9.91-v9.99b)
 5. A user with Mobile Device write access in the API
-7. Probably a test JSS. Definitly a test JSS.
+6. Probably a test JSS. Definitly a test JSS.
 
 
 A few words of caution
