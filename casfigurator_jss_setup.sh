@@ -84,7 +84,7 @@ read -s apiPassword
 rm $local_ext_att_path &>/dev/null
 
 #sets the curl options because the commands get pretty long
-curl_options="-s -k -u $apiUser:$apiPassword -H \"Accept: application/xml\""
+curl_options="-s -u $apiUser:$apiPassword -H \"Accept: application/xml\" -H \"Content-type: application/xml\""
 
 #path for intial check and extension attribute data output
 #currently we need to do the initial check twice, so this saves an extra API call
@@ -146,7 +146,7 @@ if [[ "$app_group_ext_att" == "" ]]; then
 		
 		#Post extension attribute xml to JSS - also send output to file to verify it was successful
 		#This command is really long but works - to change
-		curl -s -X POST -H "Accept: application/xml" -H "Content-type: application/xml" -k -u $apiUser:$apiPassword -T /tmp/put_ext_att.xml ${jssAPIpath}/mobiledeviceextensionattributes/id/0 | tee -a /tmp/ext_att_post_results.xml
+		curl -s -X POST -H "Accept: application/xml" -H "Content-type: application/xml" -u $apiUser:$apiPassword -T /tmp/put_ext_att.xml ${jssAPIpath}/mobiledeviceextensionattributes/id/0 | tee -a /tmp/ext_att_post_results.xml
 		app_group_ext_att=`cat /tmp/ext_att_post_results.xml`
 		echo ""
 		
@@ -233,18 +233,23 @@ do
 					</criterion>
 				  </criteria>
 				</mobile_device_group>" > "/tmp/app_group_post_tmp.xml"
-	curl -s -X POST -H "Accept: application/xml" -H "Content-type: application/xml" -k -u $apiUser:$apiPassword -T /tmp/app_group_post_tmp.xml ${jssAPIpath}/mobiledevicegroups/id/0 | tee -a /tmp/app_group_tmp_result.xml
+	curl -s -X POST -H "Accept: application/xml" -H "Content-type: application/xml" -u $apiUser:$apiPassword -T /tmp/app_group_post_tmp.xml ${jssAPIpath}/mobiledevicegroups/id/0 | tee -a /tmp/app_group_tmp_result.xml
 	sleep 1
 	echo ""
 	read -r -p "Would you like to add an App Distribution Group group? [y/N] " response
 done
 
 echo "Here's your updated list of App Distribution Groups..."
-
+echo "(Depending on how fast your JSS is, this may not be entirely accurate..."
+echo "You may want to give the JSS a minute to do it's calculations and get in the GUI.)"
 
 getAppDistGroups 
 
 echo "\n\nExiting Casfigurator Setup. Thanks for stopping by!" 
+
+
+
+
 
 
 
