@@ -1,7 +1,7 @@
 with timeout of (60 * 60) seconds
 	
 	try
-		display dialog "Welcome to the Casfigurator v0.1!
+		display dialog "Welcome to the Casfigurator v0.1.1!
 Created by Josh Bourdon
 github.com/bumbletech/casfigurator
 	
@@ -84,6 +84,24 @@ Preferences are saved at ~/Library/Preferences/com.bumbletech.casfigurator.plist
 	
 	set CartNameURLencoded to do shell script "/usr/bin/python -c 'import sys, urllib; print urllib.quote(sys.argv[1])' " & quoted form of CartName
 	
+	
+	set oldDelim to AppleScript's text item delimiters
+	set AppleScript's text item delimiters to " "
+	set progress description to "Checking JSS..."
+	set curlCommand to "curl -s -u " & apiUser & " "
+	set matchApiPath to yourJSSurl & "/JSSResource/mobiledevices/match/" & CartNameURLencoded & "* | xpath '//mobile_devices/mobile_device/name' 2>&1 | awk -F'<name>|</name>' '{print $2}' | tail -n +3 | sort"
+	set getCartDevices to do shell script curlCommand & matchApiPath
+	set AppleScript's text item delimiters to return
+	set deviceList to text items of getCartDevices
+	set listSize to count of deviceList
+	display dialog "Found " & listSize & " devices (if devices are not named correctly they will not show up):
+" & deviceList
+	
+	if listSize is 0 then
+		display dialog "No devices found! Exiting!"
+		error number -128
+	end if
+	
 	set progress additional description to "Getting App lists..."
 	
 	set curlCommand to "curl -s -u " & apiUser & " \"Accept: application/xml\" "
@@ -109,6 +127,10 @@ Preferences are saved at ~/Library/Preferences/com.bumbletech.casfigurator.plist
 	
 	set AppList to choose from list groupLists with title "App Distribution Lists" with prompt "Select app lists this iPad should subscribe to. Hold down the command key to choose more than one." with multiple selections allowed and empty selection allowed
 	
+	if AppList is false then
+		error number -128
+	end if
+	
 	try
 		display dialog "You have selected: " & AppList
 	on error
@@ -116,18 +138,8 @@ Preferences are saved at ~/Library/Preferences/com.bumbletech.casfigurator.plist
 	end try
 	
 	try
-		
-		set oldDelim to AppleScript's text item delimiters
-		set AppleScript's text item delimiters to " "
-		set progress description to "Checking JSS..."
 		set curlCommand to "curl -s -u " & apiUser & " "
-		set matchApiPath to yourJSSurl & "/JSSResource/mobiledevices/match/" & CartNameURLencoded & "* | xpath '//mobile_devices/mobile_device/name' 2>&1 | awk -F'<name>|</name>' '{print $2}' | tail -n +3 | sort"
-		set getCartDevices to do shell script curlCommand & matchApiPath
-		set AppleScript's text item delimiters to return
-		set deviceList to text items of getCartDevices
-		set listSize to count of deviceList
-		display dialog "Found " & listSize & " devices (if devices are not named correctly they will not show up):
-" & deviceList
+		set oldDelim to AppleScript's text item delimiters
 		set AppleScript's text item delimiters to " "
 		set extAtAppDistGroup to "<extension_attribute><id>10</id><name>App Distribution Group</name><type>String</type><value>" & AppList & "</value></extension_attribute>"
 		set PutXMLforFile to "echo \"<mobile_device><extension_attributes>" & extAtAppDistGroup & "</extension_attributes></mobile_device>\" > /tmp/deviceConfigPutTemp.xml"
@@ -135,6 +147,7 @@ Preferences are saved at ~/Library/Preferences/com.bumbletech.casfigurator.plist
 		set progress description to "Checking JSS..."
 		set matchApiPath to yourJSSurl & "/JSSResource/mobiledevices/match/" & CartName & "* | xpath '//mobile_devices/mobile_device/id' 2>&1 | awk -F'<id>|</id>' '{print $2}' | tail -n +3"
 		set getCartDevices to do shell script curlCommand & matchApiPath
+		display dialog getCartDevices
 		set AppleScript's text item delimiters to return
 		set deviceList to text items of getCartDevices
 		set counter to 0
@@ -146,6 +159,7 @@ Preferences are saved at ~/Library/Preferences/com.bumbletech.casfigurator.plist
 			--display dialog "URL:
 			--" & putRequest & "
 			--" & PutXMLforFile
+			display dialog putRequest
 			do shell script putRequest
 		end repeat
 		
