@@ -1,7 +1,7 @@
 with timeout of (60 * 60) seconds
 	
 	try
-		display dialog "Welcome to the Casfigurator v0.1!
+		display dialog "Welcome to the Casfigurator v0.1.1!
 Created by Josh Bourdon
 github.com/bumbletech/casfigurator
 
@@ -35,7 +35,9 @@ Preferences are saved at ~/Library/Preferences/com.bumbletech.casfigurator.plist
 	end try
 	
 	
-	display dialog "JSS url is " & yourJSSurl & " Enter your JSS username" default answer ""
+	display dialog "JSS url is " & yourJSSurl & ".
+
+ Enter your JSS username" default answer ""
 	set jssUser to (the text returned of the result)
 	
 	display dialog "Enter your password" default answer "" with hidden answer
@@ -56,7 +58,7 @@ Preferences are saved at ~/Library/Preferences/com.bumbletech.casfigurator.plist
 	
 	
 	if "Unauthorized" is in Authcheck then
-		display dialog "Username or password incorrect. Exiting workflow. Please try again or contact the Apple Administrator. (Some special characters cause scipts to fail!)" with icon caution
+		display dialog "Username or password incorrect. Exiting workflow. Please try again or contact your JSS Administrator. (Some special characters cause scipts to fail!)" with icon caution
 		error "Could not authenticate to the JSS with provided username and password."
 		error number -128
 		exit repeat
@@ -84,7 +86,7 @@ Preferences are saved at ~/Library/Preferences/com.bumbletech.casfigurator.plist
 	end try
 	
 	if AppDistExtAttIDNum is greater than 0 then
-		display dialog "App Distribution Group Extension Attribute ID is: " & AppDistExtAttID
+		display dialog "App Distribution Group Extension Attribute ID is: " & AppDistExtAttID & ". If this is incorrect, please cancel."
 	else
 		display dialog "Couldn't find the ID for the Mobile Device Extension Attribute - \"App Distribution Group\". Exiting... Double check your JSS at " & yourJSSurl & "/mobileDeviceExtensionAttributes.html and if \"App Distribution Group\" is missing, please run the casfigurator_jss_setup.sh script." buttons ["OK"] default button 1 with icon caution
 		error number -128
@@ -138,14 +140,16 @@ Preferences are saved at ~/Library/Preferences/com.bumbletech.casfigurator.plist
 	
 	set rawGrouops to GroupIds
 	repeat with groupID in rawGrouops
-		--display dialog "group id:" & groupId
-		--display dialog "command: " & curlCommand & yourJSSurl & "/JSSResource/mobiledevicegroups/id/" & groupId & " | xpath '//mobile_device_group/criteria/criterion' 2>&1 | grep 'App Distribution Group' | awk -F'<value>|</value>' '{print $2}'"
 		set groupCriteria to do shell script curlCommand & yourJSSurl & "/JSSResource/mobiledevicegroups/id/" & groupID & " | xpath '//mobile_device_group/criteria/criterion' 2>&1 | grep 'App Distribution Group' | awk -F'<value>|</value>' '{print $2}'"
-		--display dialog "Group Criteria: " & groupCriteria
 		set groupLists to groupLists & groupCriteria
 	end repeat
 	
+	
 	set AppList to choose from list groupLists with title "App Distribution Lists" with prompt "Select app lists this iPad should subscribe to. Hold down the command key to choose more than one." with multiple selections allowed and empty selection allowed
+	
+	if AppList is false then
+		error number -128
+	end if
 	
 	try
 		display dialog "You have selected: " & AppList
@@ -217,7 +221,14 @@ Preferences are saved at ~/Library/Preferences/com.bumbletech.casfigurator.plist
 			do shell script PutXMLforFile
 			set AppleScript's text item delimiters to ""
 			set putRequest to curlCommand & thisDeviceAPIpath & "-T \"/tmp/deviceConfigPutTemp.xml\" -X PUT"
-			do shell script putRequest
+			set ThePutRequest to do shell script putRequest
+			
+			
+			if "The server has not found anything matching the request URI" is in ThePutRequest then
+				display dialog "The iPad " & thisSerialNumber & " could not be found on the JSS: '" & yourJSSurl & "'. Please make sure this device is enrolled. The script will try the next iPad." with icon caution
+				error "Could not find iPad" & thisSerialNumber & " on the JSS: '" & yourJSSurl & "'"
+			end if
+			
 		end repeat
 		
 		set progress description to "iPad Setup"
