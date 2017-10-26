@@ -1,5 +1,7 @@
 casfigurator
 ======
+*Need to talk it out? Head to the [#ac2-automation](https://macadmins.slack.com/archives/C7PEE7HTK) channel on the [MacAdmins Slack](macadmins.slack.com)*
+
 *Improved, wire-assisted, but over-the-air iOS “imaging” with Configurator 2's automation tools and Casper. (Essentially: trying to emulate Munki+DeployStudio for iPads.)*
 
 ![alt tag](images/casfigurator_window.png)
