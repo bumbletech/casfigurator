@@ -2,20 +2,20 @@ casfigurator
 ======
 *Need to talk it out? Head to the [#ac2-automation](https://macadmins.slack.com/archives/C7PEE7HTK) channel on the [MacAdmins Slack](macadmins.slack.com)*
 
-*Improved, wire-assisted, but over-the-air iOS “imaging” with Configurator 2's automation tools and Casper. (Essentially: trying to emulate Munki+DeployStudio for iPads.)*
+*Improved, wire-assisted, but over-the-air iOS “imaging” with Configurator 2's automation tools and JAMF (née Casper). (Essentially: trying to emulate an assisted thin-imaging style process for iPads.)*
 
 ![alt tag](images/casfigurator_window.png)
 
 *(Casfigurator prompting a user to select the app lists to apply to connected iOS devices)*
 
-###**_Now on version 0.1!_**
-You can find it on the [releases page](https://github.com/bumbletech/casfigurator/releases)
-
+Demo Video
+-----
 [Here's a video overview and demo of version v0.1](https://youtu.be/taqDR3x-GC4)
 
 
-####Introduction
-The goal of Casfigurator is to give field technicians, "accidental-technicians" (secretaries, teachers, interns) and other laymen a tool to setup cart-based/non-user-assigned iOS devices with a menu of pre-determined app distribution groups—all without having to manually create groups, or update app scopes on the JSS. Casfigurator is a collection of AppleScripts that connects Apple Configurator 2 (and its very important automation tools) with the Casper JSS API. This allows guided iPad setup and the ability to add App Distribution manifests in an easy way that doesn't use the Terminal or CSVs.
+Introduction
+-----
+The goal of Casfigurator is to give field technicians, "accidental-technicians" (secretaries, teachers, interns) and other laymen a tool to setup cart-based/non-user-assigned iOS devices with a menu of pre-determined app distribution groups—all without having to manually create groups, or update app scopes on the JSS. Casfigurator is a collection of AppleScripts that connects Apple Configurator 2 (and its very important automation tools) with the Casper/JSS API. This allows guided iPad setup and the ability to add App Distribution manifests in an easy way that doesn't use the Terminal or CSVs.
 
 Essentially: My way of trying to emulate Munki+DeployStudio for iPads.
 
@@ -23,7 +23,8 @@ These scripts can be run on their own after initial iPad setup, or as part of an
 
 [View the orignal proof-of-concept video and demo here](https://www.youtube.com/watch?v=g98iwQDwUb0)
 
-####Requirements
+Requirements
+-----
 1. Minumum macOS: 10.11 - El Capitan (tested through 10.12.4)
 2. Configurator 2 (tested with v2.2.1-v2.4)
 3. Configurator Automation Tools Installed
